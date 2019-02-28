@@ -24,14 +24,16 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class Driver {
 
-	public void connect() throws EventHubException, ExecutionException, InterruptedException, IOException {
+	public void connect(String namespace, String hubName, String sasKeyName, String saskey) 
+               throws EventHubException, ExecutionException, InterruptedException, IOException {
         final ConnectionStringBuilder connStr = new ConnectionStringBuilder()
-                .setNamespaceName("schwab-hub02") 
-                .setEventHubName("scott1")
-                .setSasKeyName("testsender")
-                .setSasKey("5Z/KtPVYgYm4+YR/Hlwyqf0Vfogie5MV6bD9dlj1CL0=");
-        
-        //Endpoint=sb://schwab-hub02.servicebus.windows.net/;SharedAccessKeyName=testsender;SharedAccessKey=5Z/KtPVYgYm4+YR/Hlwyqf0Vfogie5MV6bD9dlj1CL0=
+                .setNamespaceName(namespace) 
+                .setEventHubName(hubName)
+                .setSasKeyName(sasKeyName)
+                .setSasKey(saskey);
+       
+        //exmaple of an endpoint for this evewnthub 
+        //Endpoint=sb://<<hubName>>.servicebus.windows.net/;SharedAccessKeyName=<<sasKeyName>>;SharedAccessKey=<<sasKey>>
         final Gson gson = new GsonBuilder().create();
 
         // The Executor handles all asynchronous tasks and this is passed to the EventHubClient instance.
@@ -72,11 +74,13 @@ public class Driver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		System.out.println("hello world");
 		Driver d = new Driver();
 		try {
-			d.connect();
+			d.connect(System.getenv("AZ_NAMESPACE"), 
+                                  System.getenv("AZ_HUBNAME"), 
+                                  System.getenv("AZ_SASKEYNAME"),
+                                  System.getenv("AZ_SASKEY"));
 		} catch(Exception e) {
 			System.out.println("failure: " + e.getMessage());
 		}
